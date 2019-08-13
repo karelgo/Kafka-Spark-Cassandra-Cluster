@@ -26,7 +26,7 @@ In another terminal run:
 
 You should now see the text you typed in the producer shell.
 
-### To run a real time twitter application that will be run on a Kafka and Spark cluster, run:
+### To run a real time twitter application producer run:
 
 ```docker exec -ti $(docker-compose ps -q spark-worker) sh```
 
@@ -42,12 +42,15 @@ then run
 
 ```java -cp "/opt/kafka_2.11-2.3.0/libs/*":"/opt/twitter4j-4.0.7/lib/*":. KafkaTwitterProducer ZHtJeQLMOziJmZRhrSpwi5etd UDLqG5zzttnK2nV0FLZLMjvp79c0vxZkf1S2nN5R9cb4xdqqIX 943468482871558149-YIGUcdoUIpMHB7rj7lcFUCKv6KVrUYQ YBnZox3nvJ0FJbG61G1KpklOIBRdCJxReMUjqBjYtCoax events kpmg ibm big-data kafka hadoop scala java```
 
+### To run a word count on a spark cluster that consumes the twitter data run:
+
 IN PROGRESS
 
 TODO: 
-1. Store Twitter data to Cassandra database
-2. Enhance app functionality
-3. Hide crypto material from plain sight (not that it matters a lot, just want to show I am aware I am showing the twitter keys)
+1. Deploy word count app on spark cluster to read and do a word count on the Twitter data.
+2. Store Twitter data to Cassandra database
+3. Enhance app functionality
+4. Hide crypto material from plain sight (not that it matters a lot, just want to show I am aware I am showing the twitter keys)
 
 ### To clean Docker run (works in Mac/UNIX terminal):
 
