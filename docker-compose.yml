@@ -1,11 +1,30 @@
 version: "3.3"
 services:
+  # dse:
+  #   image: datastax/dse-server
+  #   container_name: cassandra
+  #   ports:
+  #   - "9042:9042" # cassandra
+  #   environment:
+  #     DS_LICENSE: accept
+  #   volumes:
+  #   - "./cassandra/data:/var/lib/cassandra" # this is where files get saved
+  #   # Allow DSE to lock memory with mlock
+  #   cap_add:
+  #   - IPC_LOCK
+  #   ulimits:
+  #     memlock: -1
+  #   command: [ -s ]
+
   zookeeper:
+    container_name: zookeeper
     image: wurstmeister/zookeeper
     ports:
       - "2181:2181"
+
   kafka:
     image: wurstmeister/kafka
+    container_name: kafka
     ports:
       - "9092:9092"
     environment:
@@ -13,8 +32,9 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+
   spark-master:
-    image: karelgoense/public
+    image: karelgoense/public:karelgoense-spark
     container_name: spark-master
     hostname: spark-master
     ports:
@@ -27,8 +47,10 @@ services:
       - "SPARK_MASTER_PORT=7077"
       - "SPARK_MASTER_WEBUI_PORT=8080"
     command: "/start-master.sh"
+
   spark-worker:
-    image: karelgoense/public
+    image: karelgoense/public:karelgoense-spark
+    container_name: spark-worker
     depends_on:
       - spark-master
     ports:
@@ -41,6 +63,7 @@ services:
     volumes:
       - "./data:/local"
     command: "/start-worker.sh"
+    
 networks:
   spark-network:
     driver: bridge
