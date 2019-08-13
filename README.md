@@ -46,3 +46,8 @@ todo: combine these two commands in one (buggy atm)
 ```docker rm -f -v $(docker ps -aq) 2>/dev/null; docker rmi $(docker images -qf "dangling=true") 2>/dev/null; docker rmi $(docker images | grep "dev-" | awk "{print $1}") 2>/dev/null; docker rmi $(docker images | grep "^<none>" | awk "{print $3}") 2>/dev/null```
 
 IN PROGRESS
+
+TODO: 
+1. Implement consumer app in spark that subscribes to kafka topic
+2. Store consumed data to Cassandra database
+3. Enhance app functionality
