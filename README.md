@@ -1,6 +1,6 @@
 # KPMG-Data-Challenge
 
-This folder contains files that create a pub/sub system using Apache Kafka and Spark
+This folder contains files to create a pub/sub system using Apache Kafka, Spark, and Cassandra.
 
 For the next steps you must have Docker installed.
 
@@ -47,6 +47,7 @@ IN PROGRESS
 TODO: 
 1. Store Twitter data to Cassandra database
 2. Enhance app functionality
+3. Hide crypto material from plain sight (not that it matters a lot, just want to show I am aware I am showing the twitter keys)
 
 ### To clean Docker run (works in Mac/UNIX terminal):
 
