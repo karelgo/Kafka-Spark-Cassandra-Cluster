@@ -1,20 +1,20 @@
 version: "3.7"
 services:
-  # dse:
-  #   image: datastax/dse-server
-  #   container_name: cassandra
-  #   ports:
-  #   - "9042:9042" # cassandra
-  #   environment:
-  #     DS_LICENSE: accept
-  #   volumes:
-  #   - "./cassandra/data:/var/lib/cassandra" # this is where files get saved
-  #   # Allow DSE to lock memory with mlock
-  #   cap_add:
-  #   - IPC_LOCK
-  #   ulimits:
-  #     memlock: -1
-  #   command: [ -s ]
+  dse:
+    image: datastax/dse-server
+    container_name: cassandra
+    ports:
+    - "9042:9042" # cassandra
+    environment:
+      DS_LICENSE: accept
+    volumes:
+    - "./cassandra/data:/var/lib/cassandra" # this is where files get saved
+    # Allow DSE to lock memory with mlock
+    cap_add:
+    - IPC_LOCK
+    ulimits:
+      memlock: -1
+    command: [ -s ]
 
   zookeeper:
     container_name: zookeeper
