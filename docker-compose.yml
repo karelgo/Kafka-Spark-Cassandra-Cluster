@@ -34,7 +34,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
 
   spark-master:
-    image: karelgoense/spark:latest
+    image: karelgoense/public:karelgoense-spark
     container_name: spark-master
     hostname: spark-master
     ports:
@@ -47,7 +47,7 @@ services:
     command: "/start-master.sh"
 
   spark-worker:
-    image: karelgoense/spark:latest
+    image: karelgoense/public:karelgoense-spark
     depends_on:
       - spark-master
     ports:
