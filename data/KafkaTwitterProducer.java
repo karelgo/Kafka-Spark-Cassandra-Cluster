@@ -41,17 +41,16 @@ public class KafkaTwitterProducer {
          public void onStatus(Status status) {      
             queue.offer(status);
 
-            System.out.println("@" + status.getUser().getScreenName() 
-               + " - " + status.getText());
-            // System.out.println("@" + status.getUser().getScreenName());
+            // System.out.println("@" + status.getUser().getScreenName() 
+            //    + " - " + status.getText());
 
-            /*for(URLEntity urle : status.getURLEntities()) {
-               System.out.println(urle.getDisplayURL());
-            }*/
+            // for(URLEntity urle : status.getURLEntities()) {
+            //    System.out.println(urle.getDisplayURL());
+            // }
 
-            for(HashtagEntity hashtage : status.getHashtagEntities()) {
-               System.out.println(hashtage.getText());
-            }
+            // for(HashtagEntity hashtage : status.getHashtagEntities()) {
+            //    System.out.println(hashtage.getText());
+            // }
          }
          
          @Override
@@ -88,7 +87,7 @@ public class KafkaTwitterProducer {
       
       //Add Kafka producer config settings
       Properties props = new Properties();
-      props.put("bootstrap.servers", "localhost:9092");
+      props.put("bootstrap.servers", "kafka:9092");
       props.put("acks", "all");
       props.put("retries", 0);
       props.put("batch.size", 16384);
@@ -104,7 +103,7 @@ public class KafkaTwitterProducer {
       int i = 0;
       int j = 0;
       
-      while(i < 10) {
+      while(i < 1000) {
          Status ret = queue.poll();
          
          if (ret == null) {

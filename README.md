@@ -6,48 +6,25 @@ For the next steps you must have Docker installed.
 
 ### To set up the kafka server, zookeeper, and spark cluster in Docker, run:
 
-```docker-compose up --build -d```
-
-To run multiple spark workers (e.g. 2) run:
-
 ```docker-compose up --build -d --scale spark-worker=2```
-
-### To run a kafka producer and consumer in Docker run (you might have to wait ~30 seconds for the docker containers to start up (or longer if images need to be pulled)):
-
-In one terminal run:
-
-```docker exec -it $(docker-compose ps -q kafka) kafka-console-producer.sh --broker-list localhost:9092 --topic events```
-
-Now add text you want to see produced in the consumer.
-
-In another terminal run:
-
-```docker exec -it $(docker-compose ps -q kafka) kafka-console-consumer.sh  --bootstrap-server localhost:9092 —topic events --whitelist events --from-beginning```
-
-You should now see the text you typed in the producer shell.
 
 ### To run a real time twitter application producer run:
 
-```docker exec -ti $(docker-compose ps -q spark-worker) sh```
+```docker exec -ti $(docker ps | grep worker_1 | awk '{print $1}') sh```
 
-then run
+(You are now in a spark worker docker container) run:
 
-```javac -cp "/opt/kafka_2.11-2.3.0/libs/*":"/opt/twitter4j-4.0.7/lib/*":. /local/KafkaTwitterProducer.java```
-
-then run
-
-```cd local```
-
-then run
-
-```java -cp "/opt/kafka_2.11-2.3.0/libs/*":"/opt/twitter4j-4.0.7/lib/*":. KafkaTwitterProducer ZHtJeQLMOziJmZRhrSpwi5etd UDLqG5zzttnK2nV0FLZLMjvp79c0vxZkf1S2nN5R9cb4xdqqIX 943468482871558149-YIGUcdoUIpMHB7rj7lcFUCKv6KVrUYQ YBnZox3nvJ0FJbG61G1KpklOIBRdCJxReMUjqBjYtCoax events kpmg ibm big-data kafka hadoop scala java```
+```cd /local && java -cp "/opt/kafka_2.11-2.3.0/libs/*":"/opt/twitter4j-4.0.7/lib/*":. KafkaTwitterProducer ZHtJeQLMOziJmZRhrSpwi5etd UDLqG5zzttnK2nV0FLZLMjvp79c0vxZkf1S2nN5R9cb4xdqqIX 943468482871558149-YIGUcdoUIpMHB7rj7lcFUCKv6KVrUYQ YBnZox3nvJ0FJbG61G1KpklOIBRdCJxReMUjqBjYtCoax events blockchain```
 
 ### To run a word count on a spark cluster that consumes the twitter data run:
 
-IN PROGRESS
+```docker exec -ti $(docker ps | grep worker_2 | awk '{print $1}') sh```
 
-TODO: 
-1. Deploy word count app on spark cluster to read and do a word count on the Twitter data.
+(You are now in the other spark worker docker container) run:
+
+```/spark/bin/spark-submit --master $SPARK_MASTER local/SparkWordCount-assembly-1.0.jar```
+
+TODO:
 2. Store Twitter data to Cassandra database
 3. Enhance app functionality
 4. Hide crypto material from plain sight (not that it matters a lot, just want to show I am aware I am showing the twitter keys)
