@@ -2,3 +2,4 @@ twitter4j-4.0.7
 kafka_2.11-2.3.0
 .idea
 data/SparkWordCount-assembly-1.0.jar
+cassandra

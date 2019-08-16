@@ -7,18 +7,25 @@ import org.apache.spark.streaming.kafka010.LocationStrategies.PreferConsistent
 import org.apache.spark.streaming.kafka010.ConsumerStrategies.Subscribe
 
 import com.datastax.spark.connector._
+import org.apache.spark.sql.cassandra._
 
 object SparkWordCount {
    def main(args: Array[String]) {
 
+      if (args.length != 1) {
+         System.err.println("Usage: SparkWordCount <cassandraHost>")
+         System.exit(1)
+      }
+
+      val cassandraHost = args(0)
+      
       val conf = new SparkConf()
-      conf.set("spark.cassandra.connection.host", "127.0.0.1") // check for right host
+      conf.set("spark.cassandra.connection.host", cassandraHost)
       conf.setMaster("spark://spark-master:7077")
       conf.setAppName("KafkaWordCount")
 
-      val ssc = new StreamingContext(conf, Seconds(3))
+      val ssc = new StreamingContext(conf, Seconds(1))
       val topics = Array("events")
-
       val kafkaParams = Map[String, Object](
       "bootstrap.servers" -> "kafka:9092",
       "key.deserializer" -> classOf[StringDeserializer],
@@ -36,17 +43,14 @@ object SparkWordCount {
 
       val lines = stream.map(_.value)
       val words = lines.flatMap(_.split(" "))
-      val wordCounts = words.map(x => (x, 1L)).reduceByKey(_ + _).reduceByKeyAndWindow(_ + _, _ - _, Minutes(10), Seconds(2), 2)      
-      wordCounts.print()
+      val wordCounts = words.map(x => (x, 1L)).reduceByKey(_ + _)    
 
-      wordCounts.foreachRDD((rdd, time) => {
-      rdd.cache()
-      println("Writing " + rdd.count() + " rows to Cassandra")
-      rdd.saveToCassandra("karel", "LogTest", SomeColumns("Hashtag", "Count"))
+      wordCounts.foreachRDD((rdd) => {
+      rdd.saveToCassandra("wordcount", "hashtagwordcount", SomeColumns("hashtag", "count"))
       })
-      
-      ssc.checkpoint("checkpoint")
-      ssc.start()
-      ssc.awaitTermination()
+
+   ssc.checkpoint("checkpoint")
+   ssc.start()
+   ssc.awaitTermination()
    }
 }

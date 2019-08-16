@@ -12,6 +12,6 @@ RUN tar -xzf spark-2.4.3-bin-hadoop2.7.tgz && \
 
 COPY twitter4j-4.0.7 /opt/twitter4j-4.0.7 
 COPY kafka_2.11-2.3.0 /opt/kafka_2.11-2.3.0
-COPY ./data /local/
+COPY data /local/data
 COPY start-master.sh /start-master.sh
 COPY start-worker.sh /start-worker.sh
