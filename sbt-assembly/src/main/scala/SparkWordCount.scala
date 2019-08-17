@@ -12,8 +12,8 @@ import org.apache.spark.sql.cassandra._
 object SparkWordCount {
    def main(args: Array[String]) {
 
-      if (args.length != 1) {
-         System.err.println("Usage: SparkWordCount <cassandraHost>")
+      if (args.length != 3) {
+         System.err.println("Usage: SparkWordCount <cassandraHost> <cassandra namespace> <database name>")
          System.exit(1)
       }
 
@@ -43,10 +43,35 @@ object SparkWordCount {
 
       val lines = stream.map(_.value)
       val words = lines.flatMap(_.split(" "))
-      val wordCounts = words.map(x => (x, 1L)).reduceByKey(_ + _)    
+      val pairs = words.map(word => (word, 1))
+      val wordCounts = pairs.reduceByKey(_ + _)
 
-      wordCounts.foreachRDD((rdd) => {
-      rdd.saveToCassandra("wordcount", "hashtagwordcount", SomeColumns("hashtag", "count"))
+      def updateFunction(newValues: Seq[(Int)], runningCount: Option[(Int)]): Option[(Int)] = {
+         var result: Option[(Int)] = null
+         if(newValues.isEmpty){ //check if the key is present in new batch if not then return the old values
+            result=Some(runningCount.get)
+         }
+         else{
+            newValues.foreach { x => {// if we have keys in new batch ,iterate over them and add it
+         if(runningCount.isEmpty){
+            result=Some(x)// if no previous value return the new one
+         }else{
+            result=Some(x+runningCount.get) // update and return the value
+         }
+         } }
+         }
+         result
+      }
+      
+      val runningCounts = wordCounts.updateStateByKey[Int](updateFunction(_,_))
+
+      runningCounts.print()
+
+      val nameSpace = args(1)
+      val databaseName = args(2)
+
+      runningCounts.foreachRDD((rdd) => {
+         rdd.saveToCassandra(nameSpace, databaseName, SomeColumns("hashtag", "count"))
       })
 
    ssc.checkpoint("checkpoint")

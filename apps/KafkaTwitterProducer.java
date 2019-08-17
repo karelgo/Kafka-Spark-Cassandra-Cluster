@@ -35,6 +35,50 @@ public class KafkaTwitterProducer {
          .setOAuthAccessTokenSecret(accessTokenSecret);
 
       TwitterStream twitterStream = new TwitterStreamFactory(cb.build()).getInstance();
+      StatusListener listener = new StatusListener() {
+        
+         @Override
+         public void onStatus(Status status) {      
+            queue.offer(status);
+
+            // System.out.println("@" + status.getUser().getScreenName() 
+            //    + " - " + status.getText());
+
+            // for(URLEntity urle : status.getURLEntities()) {
+            //    System.out.println(urle.getDisplayURL());
+            // }
+
+            // for(HashtagEntity hashtage : status.getHashtagEntities()) {
+            //    System.out.println(hashtage.getText());
+            // }
+         }
+         
+         @Override
+         public void onDeletionNotice(StatusDeletionNotice statusDeletionNotice) {
+            // System.out.println("Got a status deletion notice id:" + statusDeletionNotice.getStatusId()_;
+         }
+         
+         @Override
+         public void onTrackLimitationNotice(int numberOfLimitedStatuses) {
+            // System.out.println("Got track limitation notice:" + numberOfLimitedStatuses);
+         }
+
+         @Override
+         public void onScrubGeo(long userId, long upToStatusId) {
+            // System.out.println("Got scrub_geo event userId:" + userId + "upToStatusId:" + upToStatusId);
+         }      
+         
+         @Override
+         public void onStallWarning(StallWarning warning) {
+            // System.out.println("Got stall warning:" + warning);
+         }
+         
+         @Override
+         public void onException(Exception ex) {
+            ex.printStackTrace();
+         }
+      };
+      twitterStream.addListener(listener);
       
       FilterQuery query = new FilterQuery().track(keyWords);
       twitterStream.filter(query);
@@ -56,6 +100,7 @@ public class KafkaTwitterProducer {
          "org.apache.kafka.common.serialization.StringSerializer");
       
       Producer<String, String> producer = new KafkaProducer<String, String>(props);
+
       int i = 0;
       int j = 0;
       

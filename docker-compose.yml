@@ -1,20 +1,31 @@
 version: "3.7"
 services:
-  cassandra:
-    image: datastax/dse-server
+  seed_node:
     container_name: cassandra
+    image: "datastax/dse-server"
+    environment:
+      - DS_LICENSE=accept
     ports:
     - "9042:9042"
-    environment:
-      CASSANDRA_HOST_NAME: cassandra
-      DS_LICENSE: accept
-    volumes:
-    - "./cassandra/data:/var/lib/cassandra" # this is where files get saved
+    # Allow DSE to lock memory with mlock
     cap_add:
     - IPC_LOCK
     ulimits:
       memlock: -1
-    command: [ -s ]
+    volumes:
+      - "./cassandra/data:/var/lib/cassandra" # this is where files get saved
+  node:
+    image: "datastax/dse-server"
+    environment:
+      - DS_LICENSE=accept
+      - SEEDS=seed_node
+    links:
+      - seed_node
+    # Allow DSE to lock memory with mlock
+    cap_add:
+    - IPC_LOCK
+    ulimits:
+      memlock: -1
 
   zookeeper:
     container_name: zookeeper
@@ -56,3 +67,16 @@ services:
       - "SPARK_MASTER=spark://spark-master:7077"
       - "SPARK_WORKER_WEBUI_PORT=8080"
     command: "/start-worker.sh"
+
+  client:
+    image: karelgoense/public:karelgoense-spark
+    container_name: client
+    depends_on:
+      - spark-master
+    environment:
+      - "SPARK_MASTER=spark://spark-master:7077"
+      - "SPARK_WORKER_WEBUI_PORT=8080"
+    command: "/start-worker.sh"
+    volumes:
+      - "./apps:/local/apps"
+      - "./conf:/spark/conf"
