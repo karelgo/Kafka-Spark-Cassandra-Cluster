@@ -4,11 +4,11 @@ This folder contains files to create a pub/sub system using Apache Kafka, Spark,
 
 For the next steps you must have Docker installed. (some commands only work on UNIX systems e.g. grep)
 
-### To set up the kafka server, zookeeper, and spark cluster (with two workers and one master) in Docker, run:
+### To set up the kafka server, zookeeper, spark cluster, and cassandra databse in Docker, run:
 
 ```docker-compose up --build -d --scale node=1```
 
-## To get into the Cassandra database and create a table, run:
+### To get into the Cassandra database and create a table, run:
 
 ```docker exec -ti $(docker ps | grep cassandra | awk '{print $1}') cqlsh``` 
 
