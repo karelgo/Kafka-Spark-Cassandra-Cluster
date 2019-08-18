@@ -14,7 +14,7 @@ For the next steps you must have Docker installed. (some commands only work on U
 
 and then
 
-```CREATE KEYSPACE karelns WITH replication = {'class':'SimpleStrategy', 'replication_factor' : 2}```
+```CREATE KEYSPACE karelns WITH replication = {'class':'SimpleStrategy', 'replication_factor' : 1}```
 
 and then
 
@@ -45,10 +45,6 @@ The word 'blockchain' is added to filter the tweets containing the word blockcha
 and run
 
 ```SELECT * FROM karelns.hashtagcount```
-
-TODO:
-1. Enhance app functionality
-2. Hide crypto material from plain sight (not that it matters a lot, just want to show I am aware I am showing the twitter keys)
 
 ### To clean Docker run:
 

@@ -7,7 +7,6 @@ services:
       - DS_LICENSE=accept
     ports:
     - "9042:9042"
-    # Allow DSE to lock memory with mlock
     cap_add:
     - IPC_LOCK
     ulimits:
@@ -21,7 +20,6 @@ services:
       - SEEDS=seed_node
     links:
       - seed_node
-    # Allow DSE to lock memory with mlock
     cap_add:
     - IPC_LOCK
     ulimits:
@@ -77,6 +75,6 @@ services:
       - "SPARK_MASTER=spark://spark-master:7077"
       - "SPARK_WORKER_WEBUI_PORT=8080"
     command: "/start-worker.sh"
-    volumes:
-      - "./apps:/local/apps"
-      - "./conf:/spark/conf"
+    # volumes:
+    #   - "./apps:/local/apps"
+    #   - "./conf:/spark/conf"
