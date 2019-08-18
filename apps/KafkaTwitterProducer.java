@@ -85,7 +85,7 @@ public class KafkaTwitterProducer {
 
       Thread.sleep(5000);
       
-      //Add Kafka producer config settings
+      // Add Kafka producer config settings
       Properties props = new Properties();
       props.put("bootstrap.servers", "kafka:9092");
       props.put("acks", "all");

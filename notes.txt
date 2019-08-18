@@ -1,0 +1,89 @@
+KPMG data challenge
+
+Why did I choose Cassandra: 
+Very popular, fast reliable noSQL
+Row based key/value lookups
+Distributed
+Tables are created with specific queries in mind to keep things really fast
+Horizontally scalable
+Can be replicated easily
+Stores replicas on multiple nodes to ensure reliability and fault tolerance. 
+Easier to insert and retrieve in noSQL
+
+Next steps:
+
+If the app were to scale, ensure enough brokers, spark workers and cassandra nodes are running (add extra variables to code e.g. kafka hosts)
+Create another source such as trading data from an exchange, see if there is a correlation (e.g. linear regression, k mean clustering)
+Create a CI pipeline with tests and deployments (use concourse as pipeline and use helm as chart manager)
+
+Frequently used commands:
+
+Start zookeeper server
+bin/zkServer.sh start
+
+Start CLI
+bin/zkCli.sh 
+
+Stop zookeeper server
+bin/zkServer.sh stop
+
+Start apache Kafka server
+bin/kafka-server-start.sh config/server.properties
+
+Stop apache Kafka server
+bin/kafka-server-stop.sh config/server.properties
+
+Create Kafka topic
+bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic HiThere
+
+Create Kafka topic from Docker
+docker exec -it $(docker-compose ps -q kafka) kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic events
+
+Start producer 
+bin/kafka-console-producer.sh --broker-list localhost:9092 --topic events
+
+Start producer from docker
+docker exec -it $(docker-compose ps -q kafka) kafka-console-producer.sh --broker-list localhost:9092 --topic events
+
+Start Consumer
+bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 —topic events --whitelist events --from-beginning
+
+Start consumer from docker
+docker exec -it $(docker-compose ps -q kafka) kafka-console-consumer.sh  --bootstrap-server localhost:9092 —topic events --whitelist events --from-beginning
+
+Run spark shell
+spark-shell
+
+Run master spark in docker
+docker run --rm -it --name spark-master --hostname spark-master -p 7077:7077 -p 8080:8080 $USER/spark:latest /bin/sh
+
+/spark/bin/spark-class org.apache.spark.deploy.master.Master --ip `hostname` --port 7077 --webui-port 8080
+
+run worker spark
+docker run --rm -it --name spark-worker --hostname spark-worker --network spark_network $USER/spark:latest /bin/sh
+
+/spark/bin/spark-class org.apache.spark.deploy.worker.Worker --webui-port 8080 spark://spark-master:7077
+
+Compile Java example
+
+javac -cp "/opt/kafka_2.11-2.3.0/libs/*":"/opt/twitter4j-4.0.7/lib/*":. /local/KafkaTwitterProducer.java
+
+Compile Scala example
+
+sbt assembly (in a folder with correct sbt files)
+
+Network testing commands
+
+nc -vz localhost 9092  -> check connection from the host to the single Kafka broker
+
+netstat -vanp tcp | grep 9092
+
+lsof -nP +c 15 | grep LISTEN
+
+route | awk '/^default/ { print $2 }' -> get localhost inside docker container
+
+Nice docker Kafka set up with UI
+
+https://github.com/Landoop/fast-data-dev/blob/master/Dockerfile
+
+docker run --rm -it -p 2181:2181 -p 3030:3030 -p 8081:8081 -p 8082:8082 -p 8083:8083 -p  9092:9092 -e ADV_HOST=127.0.0.1 landoop/fast-data-dev

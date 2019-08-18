@@ -48,16 +48,16 @@ object SparkWordCount {
 
       def updateFunction(newValues: Seq[(Int)], runningCount: Option[(Int)]): Option[(Int)] = {
          var result: Option[(Int)] = null
-         if(newValues.isEmpty){ //check if the key is present in new batch if not then return the old values
-            result=Some(runningCount.get)
-         }
-         else{
+         if (newValues.isEmpty){ //check if the key is present in new batch if not then return the old values
+            result = Some(runningCount.get)
+            }
+         else {
             newValues.foreach { x => {// if we have keys in new batch ,iterate over them and add it
-         if(runningCount.isEmpty){
-            result=Some(x)// if no previous value return the new one
-         }else{
-            result=Some(x+runningCount.get) // update and return the value
-         }
+         if (runningCount.isEmpty){
+            result = Some(x)// if no previous value return the new one
+         } else {
+            result = Some(x+runningCount.get) // update and return the value
+            }
          } }
          }
          result
