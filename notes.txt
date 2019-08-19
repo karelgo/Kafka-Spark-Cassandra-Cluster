@@ -13,8 +13,8 @@ Easier to insert and retrieve in noSQL
 Next steps:
 
 If the app were to scale, ensure enough brokers, spark workers and cassandra nodes are running (add extra variables to code e.g. kafka hosts)
-Create another source such as trading data from an exchange, see if there is a correlation (e.g. linear regression, k mean clustering)
-Create a CI pipeline with tests and deployments (use concourse as pipeline and use helm as chart manager)
+Create another source such as trading data from an exchange, see if there is a correlation between hashtags and trades (e.g. linear regression, k mean clustering)
+Create a CI pipeline with tests and automatic deployments using kubernetes as the orchestrator (use concourse as pipeline and use helm as chart manager)
 
 Frequently used commands:
 
