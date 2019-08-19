@@ -22,7 +22,7 @@ and then
 
 You can check if the database is created and empty by running:
 
-```SELECT * FROM karelns.hashtagcount```
+```SELECT * FROM karelns.hashtagcount;```
 
 ### To run a real time twitter application producer, run (open up new a shell/terminal):
 
