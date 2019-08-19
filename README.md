@@ -42,7 +42,7 @@ The word 'blockchain' is added to filter the tweets containing the word blockcha
 
 ### To check the data in the database go back to the first terminal with the cqlsh shell open, run:
 
-```SELECT * FROM karelns.hashtagcount```
+```SELECT * FROM karelns.hashtagcount;```
 
 ### To clean Docker, run:
 
