@@ -1,4 +1,4 @@
-KPMG data challenge
+Data challenge
 
 Why did I choose Cassandra: 
 Very popular, fast reliable noSQL
